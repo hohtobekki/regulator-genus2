@@ -42,4 +42,4 @@ result, error = spyint.dblquad(
 
 print("Integral result", result)
 print("Corrected result", result + sum([np.pi**1.5 * const[i] for i in range(deg)]))
-print("Estimated error", error)
+print("Estimated error", error)     
