@@ -1,0 +1,35 @@
+import scipy.integrate as spyint
+import numpy as np
+
+# f : a list of rational numbers, corresponding to the polynomial f[0] * x**n + ... + f[n]
+# a : a rational number
+# Compute the integral log|1 + a| Re(z) /|f(z)| over the complex plane
+def regulator_integral(f, a = 1):
+    deg = len(f) - 1
+    assert deg == 5 or deg == 6
+    assert np.polyval(f, -a) != 0
+
+    roots = np.roots(f)
+    fder = np.polyder(f)
+    const = [roots[i].real*np.log(np.abs(a + roots[i]))/np.abs(np.polyval(fder, roots[i]))  for i in range(deg)]
+    
+    correction = lambda z, z0 : np.exp(- np.abs(z - z0)**2) / np.abs(z - z0)
+    correction_full = lambda z : sum([const[i]  * correction(z, roots[i]) for i in range(deg)])
+    f_corrected = lambda z : z.real * np.log(np.abs(a + z))/np.abs(np.polyval(f, z)) - correction_full(z)
+
+    # Evaluate integral
+    r = lambda s : s / (1 - s)
+    integrand = lambda s, theta : f_corrected(r(s)*np.exp(theta*1j)) * r(s) / (1 - s)**2
+    result, error = spyint.nquad(
+        integrand,
+        [[0, 1], [0, 2*np.pi]],
+        opts = {'limit' : 80, 'epsabs' : 1e-10, 'epsrel' : 1e-10}
+    )
+
+    return result + sum([np.pi**1.5 * const[i] for i in range(deg)]), error
+   
+f = [1, 4, 6, 2, 1, 2, 1]
+result, error = regulator_integral(f, 1)
+
+print("Regulator integral", result)
+print("Estimated error", error)     
