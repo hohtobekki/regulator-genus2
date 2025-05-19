@@ -40,6 +40,6 @@ result, error = spyint.dblquad(
     0, 1
 )
 
-print("Integral result: {result}")
-print("Corrected result: {result + np.pi**1.5 * const[i] for i in range(deg)])}")
-print("Estimated error: {error}")
+print("Integral result", result)
+print("Corrected result", result + sum([np.pi**1.5 * const[i] for i in range(deg)]))
+print("Estimated error", error)
