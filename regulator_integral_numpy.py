@@ -4,7 +4,7 @@ import scipy as sp
 
 # f : a list of rational numbers, corresponding to the polynomial f[0] * x**n + ... + f[n], where n = 5 or n = 6.
 # a : a rational number
-# Compute the integral log|1 + a| Re(z) /|f(z)| over the complex plane
+# Compute the integral log|a + z| Re(z) /|f(z)| over the complex plane
 def regulator_integral(f, a = 1):
     deg = len(f) - 1
     assert deg == 5 or deg == 6
